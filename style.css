@@ -1,4 +1,3 @@
-/* General */
 body {
     margin: 0;
     font-family: 'Inter', Arial, sans-serif;
@@ -6,7 +5,6 @@ body {
     color: #333333;
 }
 
-/* Header */
 header {
     background-color: #5988FF;
     color: #FFFFFF;
@@ -14,7 +12,6 @@ header {
     padding: 20px;
 }
 
-/* Títulos */
 h1 {
     margin: 0;
 }
@@ -25,12 +22,10 @@ h2 {
     text-decoration-color: #5988FF;
 }
 
-/* Contenido */
 main {
     padding: 20px;
 }
 
-/* Tarjetas */
 .card {
     background-color: #D6FF6B;
     border: 2px solid #5988FF;
@@ -40,13 +35,11 @@ main {
     text-align: center;
 }
 
-/* Widgets */
 iframe {
     border-radius: 10px;
     margin-top: 10px;
 }
 
-/* Links */
 a {
     color: #5988FF;
     text-decoration: none;
@@ -58,5 +51,9 @@ ul {
 }
 
 li {
-    margin: 5px 0;
+    margin: 8px 0;
+}
+
+li a {
+    font-weight: bold;
 }
