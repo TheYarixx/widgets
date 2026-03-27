@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>Dependencias Tecnológicas</title>
 
+    <!-- Fuente Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,6 +19,7 @@
 
     <main>
 
+        <!-- INFO -->
         <section class="card">
             <h2>¿Qué es la dependencia tecnológica?</h2>
             <p>
@@ -25,6 +28,7 @@
             </p>
         </section>
 
+        <!-- 🌤️ CLIMA -->
         <section class="card">
             <h2>Clima</h2>
 
@@ -38,6 +42,7 @@
             </a>
         </section>
 
+        <!-- 🕒 RELOJ -->
         <section class="card">
             <h2>Hora actual</h2>
 
@@ -48,17 +53,170 @@
             </iframe>
         </section>
 
+        <!-- ✍️ CONTADOR DE PALABRAS -->
         <section class="card">
-            <h2>Noticias de tecnología</h2>
+            <h2>Contador de palabras</h2>
+            <p>Escribe algo y mira las estadísticas en tiempo real.</p>
 
-            <ul>
-                <li><a href="https://www.bbc.com/mundo/tecnologia" target="_blank">BBC Tecnología</a></li>
-                <li><a href="https://www.xataka.com/" target="_blank">Xataka</a></li>
-                <li><a href="https://www.genbeta.com/" target="_blank">Genbeta</a></li>
-            </ul>
+            <textarea id="textInput" placeholder="Escribe aquí tu texto..." rows="5"></textarea>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-number" id="wordCount">0</span>
+                    <span class="stat-label">Palabras</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="charCount">0</span>
+                    <span class="stat-label">Caracteres</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="charNoSpace">0</span>
+                    <span class="stat-label">Sin espacios</span>
+                </div>
+            </div>
+
+            <button class="widget-btn" onclick="clearText()">Limpiar</button>
+        </section>
+
+        <!-- 🧮 CALCULADORA -->
+        <section class="card">
+            <h2>Calculadora</h2>
+
+            <div class="calc-display" id="calcDisplay">0</div>
+
+            <div class="calc-grid">
+                <button class="calc-btn btn-special" onclick="clearCalc()">C</button>
+                <button class="calc-btn btn-special" onclick="toggleSign()">+/−</button>
+                <button class="calc-btn btn-special" onclick="percent()">%</button>
+                <button class="calc-btn btn-op" onclick="setOp('/')">÷</button>
+
+                <button class="calc-btn" onclick="addDigit('7')">7</button>
+                <button class="calc-btn" onclick="addDigit('8')">8</button>
+                <button class="calc-btn" onclick="addDigit('9')">9</button>
+                <button class="calc-btn btn-op" onclick="setOp('*')">×</button>
+
+                <button class="calc-btn" onclick="addDigit('4')">4</button>
+                <button class="calc-btn" onclick="addDigit('5')">5</button>
+                <button class="calc-btn" onclick="addDigit('6')">6</button>
+                <button class="calc-btn btn-op" onclick="setOp('-')">−</button>
+
+                <button class="calc-btn" onclick="addDigit('1')">1</button>
+                <button class="calc-btn" onclick="addDigit('2')">2</button>
+                <button class="calc-btn" onclick="addDigit('3')">3</button>
+                <button class="calc-btn btn-op" onclick="setOp('+')">+</button>
+
+                <button class="calc-btn btn-zero" onclick="addDigit('0')">0</button>
+                <button class="calc-btn" onclick="addDot()">.</button>
+                <button class="calc-btn btn-op" onclick="calculate()">=</button>
+            </div>
         </section>
 
     </main>
+
+    <script>
+        /* ===== CONTADOR DE PALABRAS ===== */
+        const textInput = document.getElementById('textInput');
+
+        textInput.addEventListener('input', () => {
+            const text = textInput.value;
+
+            // Contar palabras (ignorar espacios extra)
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            const chars = text.length;
+            const charsNoSpace = text.replace(/\s/g, '').length;
+
+            document.getElementById('wordCount').textContent = words;
+            document.getElementById('charCount').textContent = chars;
+            document.getElementById('charNoSpace').textContent = charsNoSpace;
+        });
+
+        function clearText() {
+            textInput.value = '';
+            document.getElementById('wordCount').textContent = '0';
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('charNoSpace').textContent = '0';
+        }
+
+        /* ===== CALCULADORA ===== */
+        let currentValue = '0';
+        let storedValue = null;
+        let operator = null;
+        let waitingForOperand = false;
+
+        function updateDisplay(val) {
+            const display = document.getElementById('calcDisplay');
+            display.textContent = String(val).length > 12
+                ? parseFloat(val).toExponential(4)
+                : val;
+        }
+
+        function addDigit(digit) {
+            if (waitingForOperand) {
+                currentValue = digit;
+                waitingForOperand = false;
+            } else {
+                currentValue = currentValue === '0' ? digit : currentValue + digit;
+            }
+            updateDisplay(currentValue);
+        }
+
+        function addDot() {
+            if (waitingForOperand) {
+                currentValue = '0.';
+                waitingForOperand = false;
+            } else if (!currentValue.includes('.')) {
+                currentValue += '.';
+            }
+            updateDisplay(currentValue);
+        }
+
+        function setOp(op) {
+            if (operator && !waitingForOperand) {
+                calculate();
+            }
+            storedValue = parseFloat(currentValue);
+            operator = op;
+            waitingForOperand = true;
+        }
+
+        function calculate() {
+            if (operator === null || waitingForOperand) return;
+
+            const current = parseFloat(currentValue);
+            let result;
+
+            switch (operator) {
+                case '+': result = storedValue + current; break;
+                case '-': result = storedValue - current; break;
+                case '*': result = storedValue * current; break;
+                case '/': result = current !== 0 ? storedValue / current : 'Error'; break;
+            }
+
+            currentValue = String(result);
+            operator = null;
+            storedValue = null;
+            waitingForOperand = false;
+            updateDisplay(currentValue);
+        }
+
+        function clearCalc() {
+            currentValue = '0';
+            storedValue = null;
+            operator = null;
+            waitingForOperand = false;
+            updateDisplay('0');
+        }
+
+        function toggleSign() {
+            currentValue = String(parseFloat(currentValue) * -1);
+            updateDisplay(currentValue);
+        }
+
+        function percent() {
+            currentValue = String(parseFloat(currentValue) / 100);
+            updateDisplay(currentValue);
+        }
+    </script>
 
 </body>
 </html>
